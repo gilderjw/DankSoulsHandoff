@@ -23,7 +23,7 @@ def loop(frame):
 
 	timeLeft = timeLeft - 1
 
-	if timeLeft == 19:
+	if timeLeft == 119:
 		frame.label['fg'] = "black"
 
 
@@ -45,7 +45,7 @@ def loop(frame):
 		engine.runAndWait()
 
 	if timeLeft == 0:
-		timeLeft = 20
+		timeLeft = 120
 		os.system('play --no-show-progress --null --channels 1 synth %s sine %f' % (.2, 200))
 		time.sleep(.2)
 		os.system('play --no-show-progress --null --channels 1 synth %s sine %f' % (.2, 200))
@@ -95,7 +95,6 @@ class DankMemeFrame(Frame):
 				self.pendulumButton.place(anchor="s", rely=1, relx=.5)
 				self.trapButton.place(anchor="s", rely=1, relx=.65)
 		def setTimer(self, seconds):
-			print "setting timer"
 			if(seconds < 30):
 				self.timerLabel["fg"] = "red"
 			else:
@@ -133,7 +132,7 @@ for person in people:
 for person in people:
 	bosses[person] = []
 
-timeLeft = 20;
+timeLeft = 120;
 
 for s in people:
 	engine.say(s)
@@ -154,7 +153,7 @@ def main():
 	root.geometry("1920x1080")
 	frame = DankMemeFrame(root)
 	frame.setPlayer(people[i])
-	frame.setTimer(20)
+	frame.setTimer(120)
 
 	root.after(1000, loop, frame)
 	root.mainloop()
