@@ -35,13 +35,9 @@ def loop(frame):
 		engine.say(" ")
 		engine.say(" ")
 
-		i = (i + 1) % len(people)
-		if i == 0:
-			permute(people)
-			print "permuting"
 		frame.label['fg'] = "red"
-		frame.setPlayer(people[i])
-		engine.say(people[i])
+		frame.setPlayer(people[i+1])
+		engine.say(people[i+1])
 		engine.runAndWait()
 
 	if timeLeft < 8 and timeLeft > 0:
@@ -59,6 +55,10 @@ def loop(frame):
 		os.system('play --no-show-progress --null --channels 1 synth %s sine %f' % (.2, 200))
 		time.sleep(.2)
 
+		i = (i + 1) % len(people)
+		if i == 0:
+			permute(people)
+			print "permuting"
 
 		frame.setPlayer(people[i])
 
@@ -79,22 +79,21 @@ class DankMemeFrame(Frame):
 				self.parent = parent
 				self.label = Label(self, text="memes", bg="white", font=("Helvetica", 72*3), anchor=W, justify=LEFT)
 				self.deaths = Label(self, bg="white",text="normal=\npendulum=\ntrap=\n", font=("Helvetica", 36), justify=LEFT)
-				self.normalButton = Button(self, text="normal", command=lambda: incrementDeath(people[i],"normal"))
-				self.pendulumButton = Button(self, text="pendulum", command=lambda: incrementDeath(people[i],"pendulum"))
-				self.trapButton = Button(self, text="trap", command=lambda: incrementDeath(people[i],"trap"))
+				self.normalButton = Button(self, text="normal", command=lambda: incrementDeath(people[i],"normal"), height=10, width=20)
+				self.pendulumButton = Button(self, text="pendulum", command=lambda: incrementDeath(people[i],"pendulum"), height=10, width=20)
+				self.trapButton = Button(self, text="trap", command=lambda: incrementDeath(people[i],"trap"), height=10, width=20)
 				self.initUI()
 
 		def initUI(self):
 				self.parent.title("DankMemes")
 				self.pack(fill=BOTH, expand=1)
 				self.label.pack()
-				self.normalButton.pack()
-				self.pendulumButton.pack()
-				self.trapButton.pack()
 
 				self.timerLabel.pack()
 				self.deaths.place(x=5,y=5)
-
+				self.normalButton.place(anchor="s", rely=1, relx=.35)
+				self.pendulumButton.place(anchor="s", rely=1, relx=.5)
+				self.trapButton.place(anchor="s", rely=1, relx=.65)
 		def setTimer(self, seconds):
 			print "setting timer"
 			if(seconds < 30):
