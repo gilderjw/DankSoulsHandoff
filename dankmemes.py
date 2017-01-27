@@ -9,8 +9,6 @@ import os
 import pyttsx
 import random
 
-engine = pyttsx.init()
-
 def swap(xs, a, b):
     xs[a], xs[b] = xs[b], xs[a]
 
@@ -19,8 +17,88 @@ def permute(xs):
         b = random.choice(xrange(a, len(xs)))
         swap(xs, a, b)
 
-people = ["John", "Jim", "Andrew", "Chris"]
+def loop(frame):
+	global timeLeft
+	global i
 
+	timeLeft = timeLeft - 1
+
+	if timeLeft == 19:
+		frame.label['fg'] = "black"
+
+
+	frame.setTimer(timeLeft)
+
+	if timeLeft == 8:
+		i = (i + 1) % len(people)
+		if i == 0:
+			permute(people)
+			print "permuting"
+		frame.label['fg'] = "red"
+		frame.setPlayer(people[i])
+		engine.say(people[i])
+		engine.runAndWait()
+
+	if timeLeft < 8 and timeLeft > 0:
+		engine.say(timeLeft)
+		engine.runAndWait()
+
+	if timeLeft == 0:
+		timeLeft = 20
+		os.system('play --no-show-progress --null --channels 1 synth %s sine %f' % (.2, 200))
+		time.sleep(.2)
+		os.system('play --no-show-progress --null --channels 1 synth %s sine %f' % (.2, 200))
+		time.sleep(.2)
+		os.system('play --no-show-progress --null --channels 1 synth %s sine %f' % (.2, 200))
+		time.sleep(.2)
+		os.system('play --no-show-progress --null --channels 1 synth %s sine %f' % (.2, 200))
+		time.sleep(.2)
+
+
+		frame.setPlayer(people[i])
+		print "donzo"
+
+	print "talking shit"
+
+	frame.after(1000, loop, frame)
+
+
+class DankMemeFrame(Frame):
+		def __init__(self, parent):
+				Frame.__init__(self, parent, background="white")   
+				self.timerLabel = Label(self, text="memes", font=("Helvetica", 72*3), anchor=W, justify=LEFT)
+				self.parent = parent
+				self.label = Label(self, text="memes", font=("Helvetica", 72*3), anchor=W, justify=LEFT)
+				
+				self.initUI()
+
+		def initUI(self):
+				self.parent.title("DankMemes")
+				self.pack(fill=BOTH, expand=1)
+				self.label.pack()
+				self.timerLabel.pack()
+
+		def setTimer(self, seconds):
+			print "setting timer"
+			if(seconds < 30):
+				self.timerLabel["fg"] = "red"
+			else:
+				self.timerLabel["fg"] = "black"
+
+			self.timerLabel["text"] = str(seconds/60) + ":" + str(seconds%60)
+
+
+		def setPlayer(self, s):
+			self.label['text'] = s
+			self.label.pack()
+
+engine = pyttsx.init()
+engine.setProperty('rate', engine.getProperty('rate'))
+
+frame = None
+
+people = ["John", "Jim", "Andrew", "Chris"]
+timeLeft = 20;
 
 for s in people:
 	engine.say(s)
@@ -32,67 +110,18 @@ print people
 
 i = 0
 
-def loop(frame):
-	global i
+def main():
+	global frame
 	global people
 
-	engine.say("Next Is " + people[i])
-	frame.label['text']=people[i]
-	engine.runAndWait()
+	root = Tk()
+	root.geometry("1920x1080")
+	frame = DankMemeFrame(root)
+	frame.setPlayer(people[i])
+	frame.setTimer(20)
 
-	engine.say("7")
-	engine.say("6")
-	engine.say("5")
-	engine.say("4")
-	engine.say("3")
-	engine.say("2")
-	engine.say("1")
-	engine.runAndWait()
-	time.sleep(1)
-	i = (i + 1) % len(people)
-
-	os.system('play --no-show-progress --null --channels 1 synth %s sine %f' % (.2, 200))
-	time.sleep(.2)
-	os.system('play --no-show-progress --null --channels 1 synth %s sine %f' % (.2, 200))
-	time.sleep(.2)
-	os.system('play --no-show-progress --null --channels 1 synth %s sine %f' % (.2, 200))
-	time.sleep(.2)
-	os.system('play --no-show-progress --null --channels 1 synth %s sine %f' % (.2, 200))
-	time.sleep(.2)
-
-	if i == 0:
-		permute(people)
-		print "permuting"
-
-	frame.after(2000, loop, frame)
-
-
-class DankMemeFrame(Frame):
-		def __init__(self, parent):
-				Frame.__init__(self, parent, background="white")   
-				self.label = Label(self, text="memes", font=("Helvetica", 72*3), anchor=W, justify=LEFT)
-				self.parent = parent
-				
-				self.initUI()
-
-		def initUI(self):
-				self.parent.title("DankMemes")
-				self.pack(fill=BOTH, expand=1)
-				self.label.pack()
-
-		def setPlayer(self, s):
-			self.label['text'] = s
-			self.label.pack()
-			print("emem")
-
-
-def main():
-		root = Tk()
-		root.geometry("1920x1080")
-		frame = DankMemeFrame(root)
-		
-		root.after(2000, loop, frame)
-		root.mainloop()
+	root.after(1000, loop, frame)
+	root.mainloop()
 
 if __name__ == '__main__':
 		main()
