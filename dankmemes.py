@@ -82,10 +82,11 @@ class DankMemeFrame(Frame):
 				self.normalButton = Button(self, text="normal", command=lambda: incrementDeath(people[i],"normal"), height=10, width=20)
 				self.pendulumButton = Button(self, text="pendulum", command=lambda: incrementDeath(people[i],"pendulum"), height=10, width=20)
 				self.trapButton = Button(self, text="trap", command=lambda: incrementDeath(people[i],"trap"), height=10, width=20)
+				self.deathBreakdown = Label(self, justify=LEFT, bg="white", font=("Helvetica", 12), text="breakdown:")
 				self.initUI()
 
 		def initUI(self):
-				self.parent.title("DankMemes")
+				self.parent.title("DankSouls")
 				self.pack(fill=BOTH, expand=1)
 				self.label.pack()
 
@@ -94,6 +95,8 @@ class DankMemeFrame(Frame):
 				self.normalButton.place(anchor="s", rely=1, relx=.35)
 				self.pendulumButton.place(anchor="s", rely=1, relx=.5)
 				self.trapButton.place(anchor="s", rely=1, relx=.65)
+				self.deathBreakdown.place(relx=.9, rely=.1)
+
 		def setTimer(self, seconds):
 			if(seconds < 30):
 				self.timerLabel["fg"] = "red"
@@ -104,12 +107,21 @@ class DankMemeFrame(Frame):
 
 		def refreshDeaths(self,s):
 			global deaths
-			string = ""
+			global people
+
+			playerstring = ""
 			print deaths
 			for k in deaths[s]:
-				string = k + ": " + str(deaths[s][k]) + '\n' + string
+				playerstring = k + ": " + str(deaths[s][k]) + '\n' + playerstring
 
-			self.deaths['text'] = string
+			breakdownString =""
+			for player in actualPeople:
+				breakdownString = breakdownString + player + ":\n"
+				for k in deaths[player]:
+					breakdownString = breakdownString + '    ' + k + ": " + str(deaths[player][k]) + '\n'
+
+			self.deaths['text'] = playerstring
+			self.deathBreakdown['text'] = breakdownString
 
 		def setPlayer(self, s):
 			self.label['text'] = s
@@ -121,7 +133,8 @@ engine.setProperty('rate', engine.getProperty('rate'))
 
 frame = None
 
-people = ["John", "Jim", "Andrew", "Chris"]
+actualPeople = ["John", "Jim", "Andrew", "Chris"]
+people = actualPeople
 
 deaths = {}
 bosses = {}
